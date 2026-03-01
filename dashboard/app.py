@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import os
 
 # --- 1. PRO PAGE SETUP ---
 # Set the page to wide mode and add an emoji icon to the browser tab
@@ -22,15 +23,23 @@ st.markdown("""
 st.title("🌍 ClimateScope: Global Weather Analytics")
 st.markdown("Explore global weather patterns, extreme events, and seasonal trends.")
 
+
+
 # --- 2. DATA LOADING ---
 @st.cache_data
 def load_data():
-    df = pd.read_csv('../data/processed/weather_cleaned_daily.csv')
+    # 1. Get the absolute path of the directory where app.py lives
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # 2. Build the precise path to the CSV file from that location
+    csv_path = os.path.join(current_dir, '..', 'data', 'processed', 'weather_cleaned_daily.csv')
+    
+    # 3. Read the file
+    df = pd.read_csv(csv_path)
+    
     # Ensure year_month is treated as a string/category for clean plotting
     df['year_month'] = df['year_month'].astype(str)
     return df
-
-df = load_data()
 
 # --- 3. PRO SIDEBAR ---
 with st.sidebar:
