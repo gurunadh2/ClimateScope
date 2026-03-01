@@ -25,22 +25,25 @@ st.markdown("Explore global weather patterns, extreme events, and seasonal trend
 
 
 
+import os
+
 # --- 2. DATA LOADING ---
 @st.cache_data
 def load_data():
-    # 1. Get the absolute path of the directory where app.py lives
+    # 1. Get the absolute path of the directory
     current_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # 2. Build the precise path to the CSV file from that location
+    # 2. Build the precise path
     csv_path = os.path.join(current_dir, '..', 'data', 'processed', 'weather_cleaned_daily.csv')
     
-    # 3. Read the file
-    df = pd.read_csv(csv_path)
+    # 3. Read the file into a variable called 'data'
+    data = pd.read_csv(csv_path)
+    data['year_month'] = data['year_month'].astype(str)
     
-    # Ensure year_month is treated as a string/category for clean plotting
-    df['year_month'] = df['year_month'].astype(str)
-    return 
+    # 4. We MUST return 'data' so the app can use it
+    return data
 
+# 5. Call the function WITH parentheses and save it as 'df'
 df = load_data()
 
 # --- 3. PRO SIDEBAR ---
