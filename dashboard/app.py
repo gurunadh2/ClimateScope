@@ -39,7 +39,9 @@ def load_data():
     
     # Ensure year_month is treated as a string/category for clean plotting
     df['year_month'] = df['year_month'].astype(str)
-    return df
+    return 
+
+df = load_data()
 
 # --- 3. PRO SIDEBAR ---
 with st.sidebar:
