@@ -30,8 +30,6 @@ def load_data():
     data['last_updated'] = pd.to_datetime(data['last_updated'])
     data['year_month'] = data['year_month'].astype(str)
     
-    # Create a mock 'Continent' column for hierarchical charting if it doesn't exist
-    # (Assuming basic text matching for demonstration; adjust as needed)
     if 'continent' not in data.columns:
         data['continent'] = 'Global' 
     return data
@@ -40,13 +38,15 @@ df = load_data()
 
 # --- 3. POWER BI STYLE SIDEBAR CONTROLS ---
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/3204/3204071.png", width=50) # Generic analytic icon
-    st.header("Global Master Filters")
+    st.header("🎛️ Global Master Filters")
     
-    # 1. Primary & Secondary Metrics
+    # 1. Primary & Secondary Metrics (THE FIX IS HERE)
     numeric_cols = ['temperature_celsius', 'humidity', 'wind_kph', 'precip_mm', 'pressure_mb', 'uv_index', 'cloud']
     selected_var_col = st.selectbox("🎯 Primary Analysis Metric", numeric_cols, index=0)
-    secondary_var_col = st.selectbox("⚖️ Secondary Comparison Metric", numeric_cols, index=1)
+    
+    # Dynamically remove the selected primary metric from the secondary options to prevent duplicate errors
+    secondary_options = [col for col in numeric_cols if col != selected_var_col]
+    secondary_var_col = st.selectbox("⚖️ Secondary Comparison Metric", secondary_options, index=0)
     
     st.markdown("---")
     
@@ -59,7 +59,7 @@ with st.sidebar:
     top_countries = df['country'].value_counts().head(10).index.tolist()
     selected_countries = st.multiselect("🌍 Target Countries", sorted(df['country'].unique()), default=top_countries[:4])
     
-    # 4. Outlier Removal Toggle (Senior Level Feature)
+    # 4. Outlier Removal Toggle
     remove_outliers = st.checkbox("🛡️ Filter Extreme Outliers (99th Percentile)", value=False)
 
 # --- Apply Filters ---
@@ -105,7 +105,6 @@ else:
         map_col1, map_col2 = st.columns([3, 1])
         
         with map_col1:
-            # High-end Bubble Map using Scatter Geo
             fig_geo = px.scatter_geo(
                 filtered_df.groupby('country', as_index=False).mean(numeric_only=True), 
                 locations="country", locationmode="country names",
@@ -126,7 +125,6 @@ else:
     # TAB 2: ADVANCED TIME SERIES
     with tab2:
         st.markdown("### Temporal Analysis with Moving Averages")
-        # Toggle for rolling average
         rolling_window = st.slider("Select Rolling Average Window (Days)", min_value=1, max_value=30, value=7)
         
         time_data = filtered_df.groupby(['last_updated', 'country'])[selected_var_col].mean().reset_index()
@@ -155,22 +153,15 @@ else:
         
         with colA:
             st.markdown(f"**Dual-Axis Scatter: {selected_var_col} vs {secondary_var_col}**")
-            
-            # Enterprise Error Handling: Prevent the DuplicateError crash
-            if selected_var_col == secondary_var_col:
-                st.info("💡 Please select a different Secondary Metric in the sidebar to view cross-variable interactions.")
-            else:
-                # Marginal charts add histograms to the edges of the scatter plot
-                fig_scatter = px.scatter(filtered_df.sample(n=min(2000, len(filtered_df))), 
-                                         x=selected_var_col, y=secondary_var_col, 
-                                         color="country", marginal_x="histogram", marginal_y="box",
-                                         trendline="ols")
-                st.plotly_chart(fig_scatter, use_container_width=True)
+            fig_scatter = px.scatter(filtered_df.sample(n=min(2000, len(filtered_df))), 
+                                     x=selected_var_col, y=secondary_var_col, 
+                                     color="country", marginal_x="histogram", marginal_y="box",
+                                     trendline="ols")
+            st.plotly_chart(fig_scatter, use_container_width=True)
             
         with colB:
             st.markdown("**Hierarchical Sunburst**")
             st.markdown("Breakdown of data volume by Country and then specific Location/City.")
-            # Sunburst requires categorical hierarchy
             sun_data = filtered_df.groupby(['country', 'location_name']).size().reset_index(name='count')
             fig_sun = px.sunburst(sun_data, path=['country', 'location_name'], values='count', color='count', color_continuous_scale="Teal")
             fig_sun.update_layout(margin=dict(t=0, l=0, r=0, b=0))
