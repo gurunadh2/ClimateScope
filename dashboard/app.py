@@ -155,12 +155,17 @@ else:
         
         with colA:
             st.markdown(f"**Dual-Axis Scatter: {selected_var_col} vs {secondary_var_col}**")
-            # Marginal charts add histograms to the edges of the scatter plot (Very Tableau)
-            fig_scatter = px.scatter(filtered_df.sample(n=min(2000, len(filtered_df))), 
-                                     x=selected_var_col, y=secondary_var_col, 
-                                     color="country", marginal_x="histogram", marginal_y="box",
-                                     trendline="ols")
-            st.plotly_chart(fig_scatter, use_container_width=True)
+            
+            # Enterprise Error Handling: Prevent the DuplicateError crash
+            if selected_var_col == secondary_var_col:
+                st.info("💡 Please select a different Secondary Metric in the sidebar to view cross-variable interactions.")
+            else:
+                # Marginal charts add histograms to the edges of the scatter plot
+                fig_scatter = px.scatter(filtered_df.sample(n=min(2000, len(filtered_df))), 
+                                         x=selected_var_col, y=secondary_var_col, 
+                                         color="country", marginal_x="histogram", marginal_y="box",
+                                         trendline="ols")
+                st.plotly_chart(fig_scatter, use_container_width=True)
             
         with colB:
             st.markdown("**Hierarchical Sunburst**")
