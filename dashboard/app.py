@@ -119,12 +119,12 @@ else:
             color_continuous_scale="Viridis"
         )
         
-        # UI Enhancements: Adding ocean, borders, and smooth rotation
+        # UI Enhancements: Adding ocean, borders, and smooth rotation (TYPO FIXED HERE)
         fig_globe.update_geos(
             showcountries=True, countrycolor="rgba(255,255,255,0.5)",
             showocean=True, oceancolor="rgba(14, 30, 64, 0.05)",
             showland=True, landcolor="rgba(210, 210, 210, 0.2)",
-            framecolor="rgba(0,0,0,0)", coastlinescolor="rgba(0,0,0,0.1)"
+            showframe=False, coastlinecolor="rgba(0,0,0,0.1)"
         )
         fig_globe.update_layout(margin={"r":0,"t":20,"l":0,"b":0}, height=600)
         st.plotly_chart(fig_globe, use_container_width=True)
