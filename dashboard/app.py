@@ -1,4 +1,5 @@
 import streamlit as st
+import textwrap
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -95,8 +96,13 @@ with st.sidebar:
     st.markdown("### 🎛️ Command Center")
     app_mode = st.radio(
         "Navigation",
-        ["Executive Insights", "Climate Change & Risk", "AI Pattern Detection", 
-         "Seasonal Decomposition", "Scenario Simulator", "Extreme Climate Analytics"]
+        ["Executive Insights", 
+         "Climate Change & Risk", 
+         "AI Pattern Detection", 
+         "Seasonal Decomposition", 
+         "Scenario Simulator", 
+         "Extreme Climate Analytics",
+         "About the Platform"] # <-- ADDED THIS LINE
     )
     st.markdown("---")
     target_metric = st.selectbox("🎯 Target Analysis Metric", ['temperature_celsius', 'humidity', 'wind_kph', 'precip_mm', 'uv_index'])
@@ -110,6 +116,8 @@ with st.sidebar:
     min_date = df['last_updated'].min().date()
     max_date = df['last_updated'].max().date()
     date_range = st.date_input("Select Date Range", value=(min_date, max_date), min_value=min_date, max_value=max_date)
+
+    
 
 # Apply Global Filters (Country + Date)
 if len(date_range) == 2:
@@ -624,3 +632,54 @@ elif app_mode == "Extreme Climate Analytics":
             
         fig_min.update_layout(template=PLOTLY_THEME, height=450, yaxis={'categoryorder':'total descending'}, margin=dict(t=40, b=0, l=0, r=0))
         st.plotly_chart(fig_min, use_container_width=True)
+
+# ==========================================
+
+
+# MODULE 7: ABOUT THE PLATFORM
+# ==========================================
+elif app_mode == "About the Platform":
+    st.markdown("""
+<style>
+.about-header { text-align: center; font-size: 3rem; font-weight: 900; background: linear-gradient(-45deg, #00f2fe, #4facfe, #818cf8, #c084fc, #00f2fe); background-size: 300% 300%; animation: flowGradient 6s ease infinite; -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+.about-subtitle { text-align: center; color: #94a3b8; font-size: 1.2rem; margin-bottom: 50px; letter-spacing: 1px; }
+.glass-card-wide { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; padding: 40px; backdrop-filter: blur(10px); margin-bottom: 40px; transition: all 0.4s ease; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
+.glass-card-wide:hover { transform: translateY(-5px); border-color: rgba(192, 132, 252, 0.6); box-shadow: 0 20px 40px -10px rgba(192, 132, 252, 0.2); }
+.social-btn { display: inline-block; padding: 12px 30px; margin: 10px; border-radius: 30px; color: #fff !important; text-decoration: none !important; font-weight: 600; font-size: 1.05rem; transition: all 0.3s ease; }
+.github-btn { background: rgba(30, 41, 59, 0.8); border: 1px solid #475569; }
+.github-btn:hover { background: #334155; transform: scale(1.05); border-color: #94a3b8; }
+.linkedin-btn { background: rgba(14, 165, 233, 0.8); border: 1px solid #0284c7; }
+.linkedin-btn:hover { background: #0ea5e9; transform: scale(1.05); border-color: #7dd3fc; }
+.tech-badge { display: inline-block; background: rgba(56, 189, 248, 0.1); color: #38bdf8; padding: 10px 20px; border-radius: 30px; font-weight: 600; font-size: 1rem; margin: 8px; border: 1px solid rgba(56, 189, 248, 0.3); transition: all 0.3s ease; }
+.tech-badge:hover { background: rgba(56, 189, 248, 0.2); transform: translateY(-2px); border-color: #38bdf8;}
+</style>
+<h1 class="about-header">Architecting Climate Intelligence</h1>
+<p class="about-subtitle">Bridging the gap between raw global meteorological data and actionable systemic risk analysis.</p>
+<div class="glass-card-wide" style="border-top: 4px solid #38bdf8;">
+<h2 style="color: #f8fafc; margin-top:0; font-size: 2rem;">🌍 Executive Mission</h2>
+<p style="color: #cbd5e1; line-height: 1.8; font-size: 1.15rem;"><b>ClimateScope</b> was engineered to transform how organizations, researchers, and policymakers interact with planetary weather data. Traditional dashboards rely on static, backward-looking reports. ClimateScope introduces a dynamic, forward-looking paradigm.</p>
+<p style="color: #cbd5e1; line-height: 1.8; font-size: 1.15rem;">By leveraging unsupervised machine learning (K-Means Clustering) and real-time dimensionality reduction (PCA), this platform finds hidden micro-climates across borders. It processes over <b>120,000+ localized data points</b>, allowing decision-makers to simulate extreme temperature shifts and profile global climate anomalies with zero latency.</p>
+</div>
+<div class="glass-card-wide" style="border-top: 4px solid #10b981;">
+<h2 style="color: #f8fafc; margin-top:0; font-size: 2rem;">⚙️ System Architecture & Tech Stack</h2>
+<p style="color: #cbd5e1; line-height: 1.8; font-size: 1.15rem; margin-bottom: 25px;">Built for high performance and seamless interactivity, ClimateScope utilizes a modern Python-based data science stack. The architecture handles dynamic grouping, advanced statistical decomposition, and interactive rendering entirely in the cloud.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+<span class="tech-badge">🐍 Python 3.10+</span>
+<span class="tech-badge">☁️ Streamlit Cloud</span>
+<span class="tech-badge">📊 Plotly Enterprise Graphic Engine</span>
+<span class="tech-badge">🤖 Scikit-Learn (ML)</span>
+<span class="tech-badge">📈 Statsmodels (Time Series)</span>
+<span class="tech-badge">🧮 Pandas & NumPy</span>
+</div>
+</div>
+<div class="glass-card-wide" style="border-top: 4px solid #c084fc; text-align: center;">
+<div style="width: 150px; height: 150px; background: linear-gradient(135deg, #38bdf8, #c084fc); border-radius: 50%; margin: 0 auto 25px auto; display: flex; align-items: center; justify-content: center; font-size: 4.5rem; box-shadow: 0 0 30px rgba(192, 132, 252, 0.4); border: 4px solid rgba(255,255,255,0.1);">👨‍💻</div>
+<h1 style="color: #f8fafc; margin-bottom: 5px; font-size: 2.5rem;">GURU</h1>
+<p style="color: #38bdf8; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-size: 1.1rem; margin-top: 0;">Lead Data Scientist & Platform Architect</p>
+<p style="color: #94a3b8; font-size: 1.1rem; line-height: 1.8; max-width: 800px; margin: 25px auto;">Specializing in full-stack data science, machine learning architecture, and high-performance interactive visualizations. GURU designed and deployed the ClimateScope AI engine from initial raw data ingestion, through feature engineering, down to the final Enterprise cloud deployment and custom UI/UX design.</p>
+<div style="margin-top: 35px;">
+<a href="https://github.com/gurunadh2" target="_blank" class="social-btn github-btn"><img src="https://img.icons8.com/ios-glyphs/30/ffffff/github.png" style="vertical-align: middle; margin-right: 8px; width: 22px;"/> GitHub</a>
+<a href="https://www.linkedin.com/in/gurunadh-nandigama-7655222b8?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3Bsdsn1AUGS4SJTOq8MvVWpA%3D%3D" target="_blank" class="social-btn linkedin-btn"><img src="https://img.icons8.com/ios-filled/50/ffffff/linkedin.png" style="vertical-align: middle; margin-right: 8px; width: 22px;"/> LinkedIn</a>
+</div>
+</div>
+""", unsafe_allow_html=True)
